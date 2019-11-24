@@ -12,9 +12,10 @@ const moduleHeight = 20;
 La méthode `select` de D3 sélectionne un élément du DOM.
 D3 utilise une technique appelée syntaxe en chaîne, que vous avez peut-être déjà vu en jQuery. En “enchaînant” les méthodes avec des points, vous pouvez effectuer plusieurs actions en une seule ligne de code.
 ```javascript
-const svg = d3.select(".barchart")
+const svg = d3.select( ".barchart" )
+  .append( "svg" )
+    .attr( "viewBox", `0 0 ${ width } ${ height }`)
+  .append("g")
+    .attr( "transform", `translate( ${ margin.left }, ${ margin.top } )` );
 ```
 [selection_append](https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_append)
-```javascript
-  .append("svg")
-```
