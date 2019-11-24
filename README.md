@@ -2,7 +2,7 @@
 Barchart MMI with D3js
 
 ## Variables
-Largeur, hauteur et marges
+On définit des variables pour les marges, la largeur, la hauteur et la hauteur d'un module.
 
 ```javascript
 const margin = { top: 30, right: 20, bottom: 10, left: 400 };
@@ -11,7 +11,7 @@ const height = 600;
 const moduleHeight = 20;
 ```
 ## Créer un élément SVG
-D3 utilise une technique appelée syntaxe en chaîne, que vous avez peut-être déjà vu en jQuery. En “enchaînant” les méthodes avec des points, vous pouvez effectuer plusieurs actions en une seule ligne de code.
+D3 utilise une technique appelée **syntaxe en chaîne**, que vous avez peut-être déjà vu en jQuery. En “enchaînant” les méthodes avec des points, on peut effectuer plusieurs actions en une seule ligne de code.
 
 La méthode [`select`](https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select) de D3 sélectionne un élément du DOM.
 
