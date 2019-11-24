@@ -96,7 +96,7 @@ d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
 }
 ```
 
-** Utiliser les données
+## Utiliser les données
 
 Lorsqu'on enchaîne des méthodes après avoir appelé `data()`, on peut créer une fonction anonyme qui acceptera `d` en entrée. La méthode data() s’assure que `d` concorde avec la valeur correspondante dans notre ensemble de données original, en fonction de l’élément courant.
 
