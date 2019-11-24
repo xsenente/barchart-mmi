@@ -98,7 +98,7 @@ d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
 
 ## Utiliser les données
 
-Lorsqu'on enchaîne des méthodes après avoir appelé `data()`, on peut créer une fonction anonyme qui acceptera `d` en entrée. La méthode data() s’assure que `d` concorde avec la valeur correspondante dans notre ensemble de données original, en fonction de l’élément courant.
+Lorsqu'on enchaîne des méthodes après avoir appelé `data()`, on peut créer une **fonction anonyme qui acceptera `d` en entrée**. La méthode `data()` s’assure que `d` concorde avec la valeur correspondante dans notre ensemble de données original, en fonction de l’élément courant.
 
 Ici, les données ont déjà été liées aux éléments "module", donc pour chaque module,
 la valeur de `d` correspond à la valeur équivalente dans notre ensemble de données à chaque module (1101, 1102, 1103, 1104…).
@@ -122,7 +122,7 @@ d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
 ```
 
 Dans chaque ligne, on ajoute un rectangle dont la largeur est définie en fonction du nombre d'heures du module.
-`d => d.heures` retourne les heures de chaque module.
+`d => d.heures` retourne le nombre d'heures de chaque module.
 
 ```javascript
 d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
