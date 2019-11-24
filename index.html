@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>D3 Test</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/d3.min.js"></script>
+</head>
+<body>
+  <div class="content">
+    <h1>Heures d'enseignement des modules par semestre</h1>
+    <p>Les Cours Magistraux (CM) ont lieu en classe entière, les Travaux Dirigés (TD) en groupes de 26 étudiants et les Travaux Pratiques (TP) en groupes de 13 étudiants afin de garantir un suivi de qualité de la progression des étudiants et appliquer une pédagogique efficace.</p>
+
+    <p>Des enseignements d’adaptation de parcours prennent place au cours du semestre 1. Ils permettent notamment une remise à niveau sur les différentes thématiques abordées au cours du DUT et l’acquisition d'une méthodologie de travail. Ils préparent l’étudiant à être autonome dans ses apprentissages tout au long de son cursus.</p>
+  </div>
+  <div class="dataviz">
+    <div class="controls">
+      <div class="select">
+        <select id="myselect">
+          <option value="semestre-1" selected="selected">Semestre 1</option>
+          <option value="semestre-2">Semestre 2</option>
+          <option value="semestre-3">Semestre 3</option>
+          <option value="semestre-4">Semestre 4</option>
+        </select>
+      </div>
+      <div class="switchs">
+        <label class="switch" for="tri">
+          <input type="checkbox" id="tri" />
+          <div class="slider round"></div>
+          Trier par heures
+        </label>
+      </div>
+    </div>
+    <div class="barchart"></div>
+  </div>
+  <script src="js/script.js"></script>
+</body>
+</html>
