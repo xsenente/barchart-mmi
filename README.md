@@ -27,7 +27,7 @@ const svg = d3.select( ".barchart" )
     .attr( "transform", `translate( ${ margin.left }, ${ margin.top } )` );
 ```
 
-## Chargement des données
+## Charger les données
 La fonction [`d3.tsv`](https://github.com/d3/d3-fetch/blob/v1.1.2/README.md#tsv) est une méthode intégrée qui permet de charger des données depuis un fichier externe de manière asynchrone.
 
 **Rappel:** dans un fichier tsv, les données doivent être séparées par des tabulations.
@@ -61,6 +61,8 @@ d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
   __proto__: Array(0)
 ```
 
+## Lier les données
+
 On ajoute un groupe pour chaque ligne
 
 [`selectAll()`](https://github.com/d3/d3-selection/blob/v1.4.1/README.md#selectAll) sélectionne tous les groupes "modules" dans le DOM. Comme aucun module n’existe pour l’instant, cela retourne une sélection vide. Voyez cette sélection vide comme représentant les modules qui vont bientôt exister.
@@ -80,7 +82,8 @@ d3.tsv( "data/heures-mmi-s1.tsv").then( function( data ) {
 }
 ```
 
-Pour créer de nouveaux éléments liés à des données, on doit utiliser la méthode [`enter()`](https://github.com/d3/d3-selection/blob/v1.4.1/README.md#selection_enter).
+Pour créer de nouveaux éléments liés à des données, on utilise la méthode [`enter()`](https://github.com/d3/d3-selection/blob/v1.4.1/README.md#selection_enter).
+
 Cette méthode jette un oeil au DOM, puis aux données qui lui ont été transmises.
 S’il y a plus de données que d’éléments DOM correspondants, alors `enter()` crée un nouvel élément.
 Elle transmet ensuite une référence à ce nouveau placeholder au prochain maillon de la chaîne.
@@ -93,11 +96,18 @@ d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
 }
 ```
 
-Nos données ont déjà été liées aux éléments "module", donc pour chaque module,
+** Utiliser les données
+
+Lorsqu'on enchaîne des méthodes après avoir appelé `data()`, on peut créer une fonction anonyme qui acceptera `d` en entrée. La méthode data() s’assure que `d` concorde avec la valeur correspondante dans notre ensemble de données original, en fonction de l’élément courant.
+
+Ici, les données ont déjà été liées aux éléments "module", donc pour chaque module,
 la valeur de `d` correspond à la valeur équivalente dans notre ensemble de données à chaque module (1101, 1102, 1103, 1104…).
+
 `i` représente la valeur d’index numérique de l’élément courant.
-En partant de 0, donc pour notre “premier” module i == 0, pour le second, i == 1 et ainsi de suite.
-On utilise i pour pousser chaque module qui suit un peu plus vers le bas, car à chaque itération la valeur de i est incrémentée (20 étant la hauteur d'un module).
+
+En partant de 0, donc pour notre “premier” module `i == 0`, pour le second, `i == 1` et ainsi de suite.
+
+On utilise `i` pour pousser chaque module qui suit un peu plus vers le bas, car à chaque itération la valeur de i est incrémentée et multipliée par la hauteur de base d'un module (20).
 
 
 ```javascript
@@ -112,7 +122,7 @@ d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
 ```
 
 Dans chaque ligne, on ajoute un rectangle dont la largeur est définie en fonction du nombre d'heures du module.
-Ici la fonction nous permet de renourner les heures de chaque module.
+`d => d.heures` retourne les heures de chaque module.
 
 ```javascript
 d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
