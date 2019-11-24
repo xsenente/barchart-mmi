@@ -13,6 +13,8 @@ const moduleHeight = 20;
 ## Créer un élément SVG
 D3 utilise une technique appelée **syntaxe en chaîne**, que vous avez peut-être déjà vu en jQuery. En “enchaînant” les méthodes avec des points, on peut effectuer plusieurs actions en une seule ligne de code.
 
+Par convention, et pour une meilleur lisibilité, chaque méthode est placée sur sa propre ligne.
+
 La méthode [`select`](https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select) de D3 sélectionne un élément du DOM.
 
 La méthode [`append`](https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_append) ajoute un élément et la méthode [`attr`](https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_attr) insère un attribut avec sa valeur.
@@ -26,16 +28,42 @@ const svg = d3.select( ".barchart" )
 ```
 
 ## Chargement des données
-La fonction [`d3.tsv`](https://github.com/d3/d3-fetch/blob/v1.1.2/README.md#tsv) permet de charger des données depuis un fichier externe de manière asynchrone. Dans le fichier tsv, les données doivent être séparées par des tabulations.
+La fonction [`d3.tsv`](https://github.com/d3/d3-fetch/blob/v1.1.2/README.md#tsv) est une méthode intégrée qui permet de charger des données depuis un fichier externe de manière asynchrone.
+
+**Rappel:** dans un fichier tsv, les données doivent être séparées par des tabulations.
 
 ```javascript
 d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
   console.log( data );
 }
 ```
+```
+(17) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, columns: Array(3)]
+  0: {module: "1101", name: "Anglais", heures: "30"}
+  1: {module: "1102", name: "LV2", heures: "20"}
+  2: {module: "1103", name: "Théories de l'information et de la com.", heures: "20"}
+  3: {module: "1104", name: "Esthétique et expression artistique", heures: "35"}
+  4: {module: "1105", name: "Ecriture pour les médias numériques", heures: "30"}
+  5: {module: "1106", name: "Communication expression écrite et orale", heures: "40"}
+  6: {module: "1107", name: "Gestion de projet", heures: "30"}
+  7: {module: "1108", name: "PPP", heures: "20"}
+  8: {module: "1109", name: "Environnement juridique, éco, mercatique", heures: "30"}
+  9: {module: "1110", name: "Adaptation de parcours", heures: "15"}
+  10: {module: "1201", name: "Culture scientifique et traitement de l'info.", heures: "45"}
+  11: {module: "1202", name: "Algorithmique et prog", heures: "30"}
+  12: {module: "1203", name: "Services sur réseaux", heures: "50"}
+  13: {module: "1204", name: "Infographie", heures: "30"}
+  14: {module: "1205", name: "Intégration web", heures: "30"}
+  15: {module: "1206", name: "Production audiovisuelle", heures: "30"}
+  16: {module: "1207", name: "Adaptation de parcours", heures: "15"}
+  columns: (3) ["module", "name", "heures"]
+  length: 17
+  __proto__: Array(0)
+```
 
 On ajoute un groupe pour chaque ligne
-[`selectAll()`](https://github.com/d3/d3-selection/blob/v1.4.1/README.md#selectAll) sélectionne tous les groupes "modules" dans le DOM. Comme aucun module n’existe pour l’instant, ça retourne une sélection vide. Voyez cette sélection vide comme représentant les modules qui vont bientôt exister.
+
+[`selectAll()`](https://github.com/d3/d3-selection/blob/v1.4.1/README.md#selectAll) sélectionne tous les groupes "modules" dans le DOM. Comme aucun module n’existe pour l’instant, cela retourne une sélection vide. Voyez cette sélection vide comme représentant les modules qui vont bientôt exister.
 
 ```javascript
 d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
