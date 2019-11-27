@@ -45,7 +45,7 @@ On transforme la fonction chargeant les données :
     [ … ]
   });
 ```
-## &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;
+### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;
 ```javascript
   function update( data ) {
     [ … ]
@@ -72,4 +72,25 @@ function changeSemestre() {
   d3.tsv( semestre( semestreSelect ) ).then( data => update( data ) );
 };
 
+```
+
+```javascript
+const row = svg.selectAll( "g.module" )
+  .data( data )
+  .enter()
+    .append( "g" )
+    .attr( "class", "module" )
+    .attr( "transform", d => "translate(0," + yScale( d.module ) + ")" );
+```
+
+### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;
+
+```javascript
+const newRow = svg.selectAll( "g.module" )
+  .data( data );
+
+const row = newRow.enter()
+  .append( "g" )
+  .attr( "class", "module" )
+  .attr( "transform", d => `translate( 0, ${ yScale( d.module ) } )` );
 ```
