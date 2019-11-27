@@ -1,7 +1,7 @@
 # barchart MMI — Les échelles
 Barchart MMI with D3js
 
-## À propos des échelles
+## À propos des échelles et des axes
 
 > Les échelles sont des fonctions qui font correspondre un domaine en entrée à une plage de sortie.
 
@@ -42,7 +42,7 @@ const xAxis = d3.axisTop()
   .scale(xScale);
 ```
 
-## Intégration et positionnement des axes
+## Intégration de l'axe des abscisses
 
 La fonction [`call()`](https://github.com/d3/d3-selection/blob/v1.4.1/README.md#selection_call) permet d'appeler la foncion `xAxis()` et d'associer les labels à ce groupe
 
@@ -51,7 +51,7 @@ svg.append("g")
   .attr("class", "x axis")
   .call(xAxis);
 ```
-
+On met à l'échelle la largeur des rectangles grace à la fonction `xScale()`.
 
 ```javascript
 d3.tsv("data/heures-mmi-s1.tsv").then(function(data) {
@@ -61,4 +61,56 @@ d3.tsv("data/heures-mmi-s1.tsv").then(function(data) {
     .attr("width", d => xScale(d.heures));
 
 });
+```
+
+## Définition et intégration de l'axe des ordonnées
+
+```javascript
+const yScale = d3.scaleBand()
+  .range( [ 0, height - margin.top - margin.bottom ] )
+  .padding(0.2)
+
+const yAxis = d3.axisLeft()
+  .scale( yScale )
+  .tickSizeOuter( 0 )
+
+svg.append( "g" )
+.attr( "class", "y axis")
+```
+
+```javascript
+d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
+  yScale.domain(data.map( d => d.module ) );
+
+  var row = svg.selectAll( "g.module" )
+    .data( data )
+    .enter()
+      .append( "g" )
+      .attr( "class", "module" )
+      .attr( "transform", d => "translate(0," + yScale( d.module ) + ")" );
+
+  row.append( "rect")
+    .attr( "class", "module_bar")
+    .attr( "x",
+    .attr( "height", yScale.bandwidth() )
+    .attr( "width", d => xScale( d.heures ) );
+
+  row.append( "text" )
+    .attr( "class", "module_hours" )
+    .attr( "y", yScale.bandwidth()/2 )
+    .attr( "x", d => xScale( d.heures ) )
+    .attr( "dy", ".35em" )
+    .attr( "dx", "0.5em" )
+    .text( d => d.heures );
+
+  svg.select( ".y.axis" )
+  .call( yAxis.tickFormat( d => "M." + d ) )
+  .selectAll( ".tick" )
+    .append( "text" )
+      .attr( "fill", "currentColor" )
+      .attr( "dx", "-7rem" )
+      .attr( "dy", ".35rem" )
+      .data( data )
+      .text( d => d.name );
+}
 ```
