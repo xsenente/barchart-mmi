@@ -37,12 +37,10 @@ function changeSemestre() {
 
 On transforme la fonction chargeant les données :
 
-Avant |  | Après
------------- | ------------- | -------------
 ```javascript
   function changeSemestre() {};
-``` 
-| => |
+```
+&downarrow;
 ```javascript
   function changeSemestre() {};
 ```
