@@ -40,7 +40,7 @@ On transforme la fonction chargeant les données :
 ```javascript
   function changeSemestre() {};
 ```
-                  &downarrow;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;
 ```javascript
   function changeSemestre() {};
 ```
