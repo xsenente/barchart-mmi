@@ -2,8 +2,7 @@
 const margin = { top: 30, right: 20, bottom: 10, left: 400 },
       width  = 800,
       height = 600,
-      heightModule = height / 20,
-      duration = 1000;
+      heightModule = height / 20;
 
 /** -----------------------------------
   * Création du SVG
@@ -50,22 +49,11 @@ svg.append( "g" )
 
 function update( data ) {
 
-  yScale.range( [ 0, data.length * ( heightModule ) ] );
-
-  if( d3.select( "input" ).property( "checked" ) ) {
-    yScale.domain( data.sort( ( a, b ) => b.heures - a.heures )
-      .map( d => d.module ) )
-  } else {
-    yScale.domain( data.map( d => d.module ) );
-  }
-
-  const textInterpol = function ( d ) {
-    const i = d3.interpolate( this.textContent, d.heures);
-    return t => this.textContent = Math.round( i( t ) );
-  };
+  yScale.domain( data.map( d => d.module ) )
+    .range( [ 0, data.length * ( heightModule ) ] );
 
   /**
-    * Voyez la constante newRow comme un conteneur des nouvelles données entrantes.
+    * Voyez la constante newRow comme un endroit de stockage pour les nouvelles données entrantes.
     * Cela permettra de faire des transitions entre les données existantes, entrantes et sortantes.
     */
   const newRow = svg.selectAll( "g.module" )
@@ -79,28 +67,20 @@ function update( data ) {
   row.insert( "rect" )
     .attr( "class", "module_bar" )
     .attr( "x", 0 )
-    .attr( "opacity", 1 )
     .attr( "height", yScale.bandwidth() )
-    .attr( "width", 0 )
-      .transition().duration( duration )
-        .attr("width", d => xScale( d.heures ) )
+    .attr( "width", d => xScale( d.heures ) )
 
   row.append( "text" )
     .attr( "class", "module_hours" )
     .attr( "y", yScale.bandwidth()/2 )
+    .attr( "x", d => xScale( d.heures ) )
     .attr( "dy", ".35em" )
     .attr( "dx", "0.5em" )
-    .attr( "x", 0 )
-    .attr( "opacity", 1 )
-    .text( 0 )
-    .transition().duration( duration )
-      .attr( "x", d => xScale( d.heures ) )
-      .tween( "text", textInterpol );
+    .text( d => d.heures );
 
   svg.select( ".y.axis" )
     .call( yAxis.tickFormat( d => "M." + d ) )
     .selectAll( ".tick" )
-      .style( "opacity", 0 )
       .append( "text" )
         .attr( "fill", "currentColor" )
         .attr( "dx", "-7rem" )
@@ -111,95 +91,17 @@ function update( data ) {
   /**
     * Mise à jour du graphique à partir des nouvelles données entrantes
     */
-
   newRow.select( ".module_bar" )
-    .transition().duration( duration )
-      .attr( "width", d => xScale( d.heures ) )
+    .attr( "width", d => xScale( d.heures ) )
 
   newRow.select( ".module_hours" )
-    .transition().duration( duration )
-      .attr( "x", d => xScale( d.heures ) )
-      .tween( "text" , textInterpol );
-
-  svg.select( ".y.axis" ).selectAll( ".tick" )
-    .transition().duration( duration / 2 )
-      .style( "opacity", 1 );
+    .attr( "x", d => xScale( d.heures ) )
+    .text( d => d.heures );
 
   /**
     * Suppression des données sortantes
     */
-
-  newRow.exit()
-    .select( ".module_bar" )
-      .transition().duration( duration )
-        .attr( "opacity", 0 )
-        .attr( "width", 0 )
-
-  newRow.exit()
-    .select( ".module_hours" )
-      .transition().duration( duration )
-        .attr( "opacity", 0 )
-        .attr( "x", 0 );
-
-  newRow.exit()
-    .transition().duration( duration )
-      .remove();
-
-  /** -----------------------------------
-    * Tri des modules par heure
-    * -----------------------------------
-    */
-
-  d3.select("input")
-    .on("change", sort);
-
-  function sort() {
-    /*
-    * On redéfinit l'ordre des données
-    */
-    const y = yScale.domain(
-      /*
-      * La fonction sort() retourne une nouvelle sélection contenant une copie de chaque groupe de cette sélection,
-      * triée selon la fonction de comparaison. Après le tri, réinsère les éléments pour qu'ils correspondent à l'ordre obtenu (par sélection.ordre).
-      * La fonction de comparaison, qui est par défaut croissante, reçoit les données a et b de deux éléments à comparer. Il devrait renvoyer une valeur négative, positive ou nulle. Si c'est négatif, alors a devrait être avant b; si positif, alors a devrait être après b; sinon, a et b sont considérés comme égaux et l'ordre est arbitraire.
-      */
-      // https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_sort
-      data.sort(
-        // Opérateur conditionnel
-        // https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Op%C3%A9rateurs/L_op%C3%A9rateur_conditionnel
-
-        this.checked
-          ? ( a, b ) => b.heures - a.heures
-          : ( a, b) => d3.ascending( a.module, b.module )
-
-        ).map ( d => d.module )
-      ).copy();
-
-      // console.log(data)
-
-      svg.selectAll( ".module" )
-        .sort( ( a, b ) => y( a.module ) - y( b.module ) );
-
-      svg.select( ".y.axis" ).selectAll( ".tick" )
-        .sort( ( a, b ) => y( a.module ) - y( b.module ) );
-
-    // On définit les transitions pour les nouvelles positions
-
-    const t = svg.transition().duration( duration );
-    // On créé un delay permettant de retarder le début de chaque animation (en milisecondes).
-    const delay = ( d, i ) => i * 50;
-
-
-    t.selectAll( ".module" )
-      .delay( delay )
-        .attr( "transform", d => `translate( 0, ${ y( d.module ) } )` );
-
-    svg.select( ".y.axis" )
-      .transition( t )
-        .call( yAxis )
-        .selectAll( ".tick" )
-          .delay( delay );
-  };
+  newRow.exit().remove();
 
 };
 
