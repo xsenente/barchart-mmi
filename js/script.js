@@ -1,7 +1,12 @@
-const margin = { top: 30, right: 20, bottom: 10, left: 400 };
-const width  = 800;
-const height = 600;
-const moduleHeight = 20;
+// Width and height
+const margin = { top: 30, right: 20, bottom: 10, left: 400 },
+      width  = 800,
+      height = 600,
+      heightModule = height / 20;
+
+/** -----------------------------------
+  * Création du SVG
+  * ----------------------------------- */
 
 const svg = d3.select( ".barchart" )
   .append( "svg" )
@@ -9,48 +14,65 @@ const svg = d3.select( ".barchart" )
   .append( "g" )
     .attr( "transform", `translate( ${ margin.left }, ${ margin.top } )` );
 
+/** -----------------------------------
+  * Création de l'échelle des abscisses
+  * ----------------------------------- */
+
 const xScale = d3.scaleLinear()
   .domain( [ 0, 50 ] )
-  .range( [0, width - margin.left - margin.right ] );
+  .range( [ 0, width - margin.left - margin.right ] );
 
-const xAxis = d3.axisTop()
-  .scale(xScale);
+const xAxis = d3.axisTop().scale(xScale);
 
 svg.append( "g" )
   .attr( "class", "x axis" )
-  .call( xAxis )
+  .call( xAxis)
+
+/** -----------------------------------
+  * Création de l'échelle des ordonnées
+  * ----------------------------------- */
 
 const yScale = d3.scaleBand()
-  .range( [ 0, height - margin.top - margin.bottom ] )
-  .padding(0.2)
+  .padding(0.2);
 
 const yAxis = d3.axisLeft()
   .scale( yScale )
   .tickSizeOuter(0)
 
 svg.append( "g" )
-  .attr( "class", "y axis")
+  .attr( "class", "y axis" )
 
-d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
+/** -----------------------------------
+  * Fonction qui redessine le graphique à chaque changement de données
+  * -----------------------------------
+  */
 
-  yScale.domain(data.map( d => d.module ) );
+function update( data ) {
 
-  const row = svg.selectAll( "g.module" )
-    .data( data )
-    .enter()
-      .append( "g" )
-      .attr( "class", "module" )
-      .attr( "transform", d => "translate(0," + yScale( d.module ) + ")" );
+  yScale.domain( data.map( d => d.module ) )
+    .range( [ 0, data.length * ( heightModule ) ] );
 
-  row.append( "rect" )
+  /**
+    * Voyez la constante newRow comme un endroit de stockage pour les nouvelles données entrantes.
+    * Cela permettra de faire des transitions entre les données existantes, entrantes et sortantes.
+    */
+  const newRow = svg.selectAll( "g.module" )
+    .data( data );
+
+  const row = newRow.enter()
+    .append( "g" )
+    .attr( "class", "module" )
+    .attr( "transform", d => `translate( 0, ${ yScale( d.module ) } )` );
+
+  row.insert( "rect" )
     .attr( "class", "module_bar" )
     .attr( "x", 0 )
     .attr( "height", yScale.bandwidth() )
-    .attr( "width", d => xScale(d.heures) )
+    .attr( "width", d => xScale( d.heures ) )
 
   row.append( "text" )
     .attr( "class", "module_hours" )
-    .attr( "y", yScale.bandwidth() / 2 )
+    .attr( "y", yScale.bandwidth()/2 )
     .attr( "x", d => xScale( d.heures ) )
     .attr( "dy", ".35em" )
     .attr( "dx", "0.5em" )
@@ -63,7 +85,48 @@ d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
         .attr( "fill", "currentColor" )
         .attr( "dx", "-7rem" )
         .attr( "dy", ".35rem" )
-      .data( data )
-        .text( d => d.name );
+        .data( data )
+          .text( d => d.name )
 
-})
+  /**
+    * Mise à jour du graphique à partir des nouvelles données entrantes
+    */
+  newRow.select( ".module_bar" )
+    .attr( "width", d => xScale( d.heures ) )
+
+  newRow.select( ".module_hours" )
+    .attr( "x", d => xScale( d.heures ) )
+    .text( d => d.heures );
+
+  /**
+    * Suppression des données sortantes
+    */
+  newRow.exit().remove();
+
+};
+
+/** -----------------------------------
+  * Fonction qui permet de changer de semestre
+  * -----------------------------------
+  */
+function changeSemestre() {
+
+  // On récupère la valeur de l'attibut "value" du select.
+  const semestreSelect = this.value;
+
+  // On créé une fonction semestre avec le paramètre datafile qui associe la valeur du select à une url de fichier
+  const semestre = (datafile) => ({
+    "semestre-1": "data/heures-mmi-s1.tsv",
+    "semestre-2": "data/heures-mmi-s2.tsv",
+    "semestre-3": "data/heures-mmi-s3.tsv",
+    "semestre-4": "data/heures-mmi-s4.tsv"
+  })[datafile]
+
+  // On utilise la fonction d3.tsv
+  d3.tsv( semestre( semestreSelect ) ).then( data => update( data ) );
+};
+
+// On initialise pour le chargement de la page
+d3.tsv("data/heures-mmi-s1.tsv").then( data => update( data ) );
+
+d3.select( "select" ).on( "change", changeSemestre );
