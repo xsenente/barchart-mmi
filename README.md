@@ -94,3 +94,19 @@ const row = newRow.enter()
   .attr( "class", "module" )
   .attr( "transform", d => `translate( 0, ${ yScale( d.module ) } )` );
 ```
+
+## Mise à jour des données
+
+```javascript
+  newRow.select( ".module_bar" )
+    .attr( "width", d => xScale( d.heures ) )
+
+  newRow.select( ".module_hours" )
+  .attr( "x", d => xScale( d.heures ) )
+  .text( d => d.heures );
+```
+
+## Suppression des données sortantes
+```javascript
+  newRow.exit().remove();
+```
