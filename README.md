@@ -1,5 +1,5 @@
 # barchart MMI — Les échelles
-Barchart MMI with D3js
+Barchart MMI avec D3js
 
 ## À propos des échelles et des axes
 
@@ -120,7 +120,7 @@ On ajoute les heures derrière les rectangles pour une meilleure lisibilité du 
     .text( d => d.heures );
 ```
 
-Enfin, on ajoute un groupe au SVG pour construire l'axe des ordonnées en utilisant la même fonction `call()`](https://github.com/d3/d3-selection/blob/v1.4.1/README.md#selection_call) expliquée un peu plus haut.
+Enfin, on ajoute un groupe au SVG pour construire l'axe des ordonnées en utilisant la même fonction [`call()`](https://github.com/d3/d3-selection/blob/v1.4.1/README.md#selection_call) expliquée un peu plus haut.
 
 La fonction `tickFormat()` permet de redéfinir le format des labels et de faire précéder chaque numéro de module par la lettre "M.".
 
@@ -141,7 +141,7 @@ Pour terminer, on ajoute le libélé de chaque module sous forme de texte devant
       .text( d => d.name );
 ```
 
-### Résumé du code
+### Résumé du code javascript
 
 ```javascript
 const margin = { top: 30, right: 20, bottom: 10, left: 400 },
@@ -211,4 +211,91 @@ d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
       .data( data )
       .text( d => d.name );
 }
+```
+
+### Résumé du code CSS
+
+```css
+  @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,700");
+  html {
+    font-size: 62.5%;
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 1.6rem;
+    color: white;
+    background: #242121;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 30px;
+  }
+
+  h1 {
+    margin-top: 5vh;
+  }
+
+  h1 + p {
+    font-size: 2.1rem;
+  }
+
+  .content {
+    flex: 1;
+    margin-right: 30px;
+  }
+
+  .dataviz {
+    flex: 2;
+    margin-top: 50px;
+  }
+
+  .module {
+    font-size: 1.4rem;
+  }
+
+  .module_bar {
+    fill: #00ffd5;
+  }
+
+  .module_id {
+    font-weight: 700;
+  }
+
+  .module_hours {
+    fill: #00ffd5;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .x.axis text {
+    font-size: 1.2rem;
+    fill: #999999;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #999999;
+  }
+
+  .x.axis path {
+    display: none;
+  }
+
+  .y.axis {
+    text-anchor: end;
+    font-size: 1.4rem;
+  }
+
+  .y.axis line + text {
+    font-weight: bold;
+  }
+
+  @media screen and (min-width: 900px) {
+    body {
+      display: flex;
+    }
+  }
+
 ```
