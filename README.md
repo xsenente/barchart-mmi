@@ -38,9 +38,13 @@ function changeSemestre() {
 On transforme la fonction chargeant les données :
 
 ```javascript
-  function changeSemestre() {};
+  d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
+    [ … ]
+  });
 ```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;
 ```javascript
-  function changeSemestre() {};
+  function update( data ) {
+    [ … ]
+  };
 ```
