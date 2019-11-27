@@ -45,7 +45,7 @@ On transforme la fonction chargeant les données :
     [ … ]
   });
 ```
-**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;**
+## &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;
 ```javascript
   function update( data ) {
     [ … ]
