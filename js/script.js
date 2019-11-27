@@ -2,7 +2,8 @@
 const margin = { top: 30, right: 20, bottom: 10, left: 400 },
       width  = 800,
       height = 600,
-      heightModule = height / 20;
+      heightModule = height / 20,
+      duration = 1000;
 
 /** -----------------------------------
   * Création du SVG
@@ -52,8 +53,13 @@ function update( data ) {
   yScale.domain( data.map( d => d.module ) )
     .range( [ 0, data.length * ( heightModule ) ] );
 
+  const textInterpol = function ( d ) {
+    const i = d3.interpolate( this.textContent, d.heures);
+    return t => this.textContent = Math.round( i( t ) );
+  };
+
   /**
-    * Voyez la constante newRow comme un endroit de stockage pour les nouvelles données entrantes.
+    * Voyez la constante newRow comme un conteneur des nouvelles données entrantes.
     * Cela permettra de faire des transitions entre les données existantes, entrantes et sortantes.
     */
   const newRow = svg.selectAll( "g.module" )
@@ -67,20 +73,28 @@ function update( data ) {
   row.insert( "rect" )
     .attr( "class", "module_bar" )
     .attr( "x", 0 )
+    .attr( "opacity", 1 )
     .attr( "height", yScale.bandwidth() )
-    .attr( "width", d => xScale( d.heures ) )
+    .attr( "width", 0 )
+      .transition().duration( duration )
+        .attr("width", d => xScale( d.heures ) )
 
   row.append( "text" )
     .attr( "class", "module_hours" )
     .attr( "y", yScale.bandwidth()/2 )
-    .attr( "x", d => xScale( d.heures ) )
     .attr( "dy", ".35em" )
     .attr( "dx", "0.5em" )
-    .text( d => d.heures );
+    .attr( "x", 0 )
+    .attr( "opacity", 1 )
+    .text( 0 )
+    .transition().duration( duration )
+      .attr( "x", d => xScale( d.heures ) )
+      .tween( "text", textInterpol );
 
   svg.select( ".y.axis" )
     .call( yAxis.tickFormat( d => "M." + d ) )
     .selectAll( ".tick" )
+      .style( "opacity", 0 )
       .append( "text" )
         .attr( "fill", "currentColor" )
         .attr( "dx", "-7rem" )
@@ -91,17 +105,39 @@ function update( data ) {
   /**
     * Mise à jour du graphique à partir des nouvelles données entrantes
     */
+
   newRow.select( ".module_bar" )
-    .attr( "width", d => xScale( d.heures ) )
+    .transition().duration( duration )
+      .attr( "width", d => xScale( d.heures ) )
 
   newRow.select( ".module_hours" )
-    .attr( "x", d => xScale( d.heures ) )
-    .text( d => d.heures );
+    .transition().duration( duration )
+      .attr( "x", d => xScale( d.heures ) )
+      .tween( "text" , textInterpol );
+
+  svg.select( ".y.axis" ).selectAll( ".tick" )
+    .transition().duration( duration / 2 )
+      .style( "opacity", 1 );
 
   /**
     * Suppression des données sortantes
     */
-  newRow.exit().remove();
+
+  newRow.exit()
+    .select( ".module_bar" )
+      .transition().duration( duration )
+        .attr( "opacity", 0 )
+        .attr( "width", 0 )
+
+  newRow.exit()
+    .select( ".module_hours" )
+      .transition().duration( duration )
+        .attr( "opacity", 0 )
+        .attr( "x", 0 );
+
+  newRow.exit()
+    .transition().duration( duration )
+      .remove();
 
 };
 
@@ -110,11 +146,7 @@ function update( data ) {
   * -----------------------------------
   */
 function changeSemestre() {
-
-  // On récupère la valeur de l'attibut "value" du select.
   const semestreSelect = this.value;
-
-  // On créé une fonction semestre avec le paramètre datafile qui associe la valeur du select à une url de fichier
   const semestre = (datafile) => ({
     "semestre-1": "data/heures-mmi-s1.tsv",
     "semestre-2": "data/heures-mmi-s2.tsv",
@@ -122,11 +154,9 @@ function changeSemestre() {
     "semestre-4": "data/heures-mmi-s4.tsv"
   })[datafile]
 
-  // On utilise la fonction d3.tsv
   d3.tsv( semestre( semestreSelect ) ).then( data => update( data ) );
 };
 
-// On initialise pour le chargement de la page
 d3.tsv("data/heures-mmi-s1.tsv").then( data => update( data ) );
 
 d3.select( "select" ).on( "change", changeSemestre );
