@@ -65,9 +65,9 @@ d3.tsv("data/heures-mmi-s1.tsv").then(function(data) {
 
 ## Définition et intégration de l'axe des ordonnées
 
-Les modules représentent des catégories naturellement ordonnées. Pour l'axe des ordonnées, il faut donc utiliser une échelle de données qualitatives ordinales.
+Les modules représentent des **catégories naturellement ordonnées**. Pour l'axe des ordonnées, il faut donc utiliser une **échelle de données qualitatives ordinales**.
 
-On utilise les échelles de bande ([`scaleBand()`](https://github.com/d3/d3-scale/tree/v2.2.2#band-scales)) qui ressemblent beaucoup aux échelles ordinales à la différence près que la plage de sortie est continue et numérique.
+On utilise les **échelles de bande** ([`scaleBand()`](https://github.com/d3/d3-scale/tree/v2.2.2#band-scales)) qui ressemblent beaucoup aux échelles ordinales à la différence près que la plage de sortie est continue et numérique.
 
 Il est à noter que le domaine d'entrée est fourni plus tard, en fonction des données chargées.
 
@@ -84,10 +84,10 @@ const yAxis = d3.axisLeft()
   .tickSizeOuter( 0 )
 
 svg.append( "g" )
-.attr( "class", "y axis")
+  .attr( "class", "y axis")
 ```
 
-On définit le domaine d'entrée à l'intérieur de la fonction s'occupant de charger les données car ce dernier est calculé en fonction du nombre de modules dans le fichier de données.
+On définit le domaine d'entrée à l'intérieur de la fonction s'occupant de charger les données car ce dernier est calculé en fonction du nombre de modules.
 
 On utilise l'objet [`Map`](https://github.com/d3/d3-collection/blob/v1.0.7/README.md#map) qui représente un dictionnaire des données, autrement dit une carte de clés/valeurs.
 
@@ -101,13 +101,14 @@ On met ensuite à l'échelle la position des groupes grâce à la fonction `ySca
   [ … ]
   .attr( "transform", d => "translate(0," + yScale( d.module ) + ")" );
 ```
+
 Puis on définit la hauteur de chaque bande automatiquement à l'aide de la fonction [`bandwidth()`](https://github.com/d3/d3-scale/blob/v2.2.2/README.md#band_bandwidth)
 
 ```javascript
   .attr( "height", yScale.bandwidth() )
 ```
 
-On ajoute les heures derrières les rectangle our une meilleure lisibilité du graphique/
+On ajoute les heures derrière les rectangles pour une meilleure lisibilité du graphique.
 
 ```javascript
   row.append( "text" )
@@ -121,7 +122,7 @@ On ajoute les heures derrières les rectangle our une meilleure lisibilité du g
 
 Enfin, on ajoute un groupe au SVG pour construire l'axe des ordonnées en utilisant la même fonction `call()`](https://github.com/d3/d3-selection/blob/v1.4.1/README.md#selection_call) expliquée un peu plus haut.
 
-La fonction `tickFormat()` permet de redéfinir le format des labels et de faire précédé chaque numéro de module par la lettre "M.".
+La fonction `tickFormat()` permet de redéfinir le format des labels et de faire précéder chaque numéro de module par la lettre "M.".
 
 ```javascript
   svg.select( ".y.axis" )
@@ -140,7 +141,41 @@ Pour terminer, on ajoute le libélé de chaque module sous forme de texte devant
       .text( d => d.name );
 ```
 
+### Résumé du code
+
 ```javascript
+const margin = { top: 30, right: 20, bottom: 10, left: 400 },
+      width  = 800,
+      height = 600,
+      moduleHeight = 20;
+
+const svg = d3.select( ".barchart" )
+  .append( "svg" )
+    .attr( "viewBox", `0 0 ${ width } ${ height }` )
+  .append( "g" )
+    .attr( "transform", `translate(${ margin.left }, ${ margin.top })` );
+
+const xScale = d3.scaleLinear()
+  .domain( [ 0, 50 ] )
+  .range( [ 0, width - margin.left - margin.right ] );
+
+const xAxis = d3.axisTop()
+  .scale( xScale );
+
+svg.append( "g" )
+  .attr( "class", "x axis" )
+  .call( xAxis );
+
+const yScale = d3.scaleBand()
+  .padding(0.2)
+
+const yAxis = d3.axisLeft()
+  .scale( yScale )
+  .tickSizeOuter(0)
+
+svg.append( "g" )
+  .attr( "class", "y axis")
+
 d3.tsv( "data/heures-mmi-s1.tsv" ).then( function( data ) {
 
   yScale.domain(data.map( d => d.module ) );
