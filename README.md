@@ -23,6 +23,8 @@ Dnas le HTML, nous ajoutons un select avec la liste des semestres.
 On définit une fonction qui permet d'écouter le changement de semestre du select et de l'associer à l'URL du fichier de données correspondant.
 
 ```javascript
+d3.select( "select" ).on( "change", changeSemestre );
+
 function changeSemestre() {
   const semestreSelect = this.value;
   const semestre = (datafile) => ({
@@ -33,6 +35,7 @@ function changeSemestre() {
   })[datafile]
   // console.log(semestre( semestreSelect ));
 };
+
 ```
 
 On transforme la fonction chargeant les données :
@@ -47,4 +50,26 @@ On transforme la fonction chargeant les données :
   function update( data ) {
     [ … ]
   };
+```
+
+On initialise pour le chargement de la page avec les données du premier semestre en utilisant la fonction `update()`.
+```javascript
+  d3.tsv("data/heures-mmi-s1.tsv").then( data => update( data ) );
+```
+
+On complète la fonction `changeSemestre()` pour mettre à jour les données en fonction de la valeur renvoyée par le `select`.
+
+```javascript
+function changeSemestre() {
+  const semestreSelect = this.value;
+  const semestre = (datafile) => ({
+    "semestre-1": "data/heures-mmi-s1.tsv",
+    "semestre-2": "data/heures-mmi-s2.tsv",
+    "semestre-3": "data/heures-mmi-s3.tsv",
+    "semestre-4": "data/heures-mmi-s4.tsv"
+  })[datafile]
+
+  d3.tsv( semestre( semestreSelect ) ).then( data => update( data ) );
+};
+
 ```
