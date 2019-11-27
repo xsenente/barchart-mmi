@@ -74,6 +74,14 @@ function changeSemestre() {
 
 ```
 
+## Enter, Exit, Update
+
+On a vu précédemment que la méthode `data()` appelait deux focntions : `enter()` et `exit()`, l'une définissant les données entrantes, l'autre les données sortantes.
+
+Le reste des éléments déjà présents doit être mis à jour avec les nouvelles valeurs.
+
+Pour cela, nous allons légèrement transformer le code suivant :
+
 ```javascript
 const row = svg.selectAll( "g.module" )
   .data( data )
@@ -83,7 +91,7 @@ const row = svg.selectAll( "g.module" )
     .attr( "transform", d => "translate(0," + yScale( d.module ) + ")" );
 ```
 
-### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&downarrow;
+Pour commencer, nous crééons une variable newRow pour stocker nos données. Ensuite nous créons une variable row qui définit nos données entrantes, elles mêmes nourries par les données stockées dans 'newRow'.
 
 ```javascript
 const newRow = svg.selectAll( "g.module" )
@@ -95,7 +103,9 @@ const row = newRow.enter()
   .attr( "transform", d => `translate( 0, ${ yScale( d.module ) } )` );
 ```
 
-## Mise à jour des données
+## Mise à jour des données existantes
+
+Pour les blocs déjà présent dans le graphique nous mettons simplement à jour les nouvelles valeurs qu'ils doivent prendre.
 
 ```javascript
   newRow.select( ".module_bar" )
@@ -105,6 +115,8 @@ const row = newRow.enter()
   .attr( "x", d => xScale( d.heures ) )
   .text( d => d.heures );
 ```
+
+Pour les données sortantes, nous les supprimons.
 
 ## Suppression des données sortantes
 ```javascript
