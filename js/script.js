@@ -50,14 +50,8 @@ svg.append( "g" )
 
 function update( data ) {
 
-  yScale.range( [ 0, data.length * ( heightModule ) ] );
-
-  if( d3.select( "input" ).property( "checked" ) ) {
-    yScale.domain( data.sort( ( a, b ) => b.heures - a.heures )
-      .map( d => d.module ) )
-  } else {
-    yScale.domain( data.map( d => d.module ) );
-  }
+  yScale.domain( data.map( d => d.module ) )
+    .range( [ 0, data.length * ( heightModule ) ] );
 
   const textInterpol = function ( d ) {
     const i = d3.interpolate( this.textContent, d.heures);
@@ -145,62 +139,6 @@ function update( data ) {
     .transition().duration( duration )
       .remove();
 
-  /** -----------------------------------
-    * Tri des modules par heure
-    * -----------------------------------
-    */
-
-  d3.select("input")
-    .on("change", sort);
-
-  function sort() {
-    /*
-    * On redéfinit l'ordre des données
-    */
-    const y = yScale.domain(
-      /*
-      * La fonction sort() retourne une nouvelle sélection contenant une copie de chaque groupe de cette sélection,
-      * triée selon la fonction de comparaison. Après le tri, réinsère les éléments pour qu'ils correspondent à l'ordre obtenu (par sélection.ordre).
-      * La fonction de comparaison, qui est par défaut croissante, reçoit les données a et b de deux éléments à comparer. Il devrait renvoyer une valeur négative, positive ou nulle. Si c'est négatif, alors a devrait être avant b; si positif, alors a devrait être après b; sinon, a et b sont considérés comme égaux et l'ordre est arbitraire.
-      */
-      // https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_sort
-      data.sort(
-        // Opérateur conditionnel
-        // https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Op%C3%A9rateurs/L_op%C3%A9rateur_conditionnel
-
-        this.checked
-          ? ( a, b ) => b.heures - a.heures
-          : ( a, b) => d3.ascending( a.module, b.module )
-
-        ).map ( d => d.module )
-      ).copy();
-
-      // console.log(data)
-
-      svg.selectAll( ".module" )
-        .sort( ( a, b ) => y( a.module ) - y( b.module ) );
-
-      svg.select( ".y.axis" ).selectAll( ".tick" )
-        .sort( ( a, b ) => y( a.module ) - y( b.module ) );
-
-    // On définit les transitions pour les nouvelles positions
-
-    const t = svg.transition().duration( duration );
-    // On créé un delay permettant de retarder le début de chaque animation (en milisecondes).
-    const delay = ( d, i ) => i * 50;
-
-
-    t.selectAll( ".module" )
-      .delay( delay )
-        .attr( "transform", d => `translate( 0, ${ y( d.module ) } )` );
-
-    svg.select( ".y.axis" )
-      .transition( t )
-        .call( yAxis )
-        .selectAll( ".tick" )
-          .delay( delay );
-  };
-
 };
 
 /** -----------------------------------
@@ -208,11 +146,7 @@ function update( data ) {
   * -----------------------------------
   */
 function changeSemestre() {
-
-  // On récupère la valeur de l'attibut "value" du select.
   const semestreSelect = this.value;
-
-  // On créé une fonction semestre avec le paramètre datafile qui associe la valeur du select à une url de fichier
   const semestre = (datafile) => ({
     "semestre-1": "data/heures-mmi-s1.tsv",
     "semestre-2": "data/heures-mmi-s2.tsv",
@@ -220,11 +154,9 @@ function changeSemestre() {
     "semestre-4": "data/heures-mmi-s4.tsv"
   })[datafile]
 
-  // On utilise la fonction d3.tsv
   d3.tsv( semestre( semestreSelect ) ).then( data => update( data ) );
 };
 
-// On initialise pour le chargement de la page
 d3.tsv("data/heures-mmi-s1.tsv").then( data => update( data ) );
 
 d3.select( "select" ).on( "change", changeSemestre );

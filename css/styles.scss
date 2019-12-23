@@ -71,39 +71,10 @@ h1 {
   }
 }
 
-
-.controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  margin-bottom: 20px;
-  color: $light-grey;
-}
-
-label {
-  margin-right: 20px;
-  font-size: 1.4rem;
-}
-
-/* ---- LEGEND ----- */
-
-.legend {
-  font-size: 1.4rem;
-  padding-left: 30px;
-  >* {
-    position: relative;
-    margin-bottom: 5px;
-    &::before {
-      content:"";
-      display: inline-block;
-      width: 20px;
-      height: 10px;
-      margin-right: 6px;
-    }
+@media screen and (min-width: 900px) {
+  body {
+    display: flex;
   }
-  .cm::before { background: darken($secondary-color, 25%); }
-  .td::before { background: darken($secondary-color, 15%); }
-  .tp::before { background: $secondary-color; }
 }
 
 /* ---- SELECT ----- */
@@ -149,59 +120,5 @@ select {
   cursor: pointer;
   &::-ms-expand {
     display: none;
-  }
-}
-
-
-/* ---- SWITCH ----- */
-
-$height: 22px;
-$space: 2px;
-$width: $height*2;
-
-.switch {
-  display: flex;
-  align-items: center;
-  padding: 5px;
-  cursor: pointer;
-  input {
-    display:none;
-    &:checked + .slider {
-      background-color: $secondary-color;
-    }
-    &:checked + .slider:before {
-      transform: translateX($height);
-    }
-  }
-  .slider {
-    background-color: #999;
-    position: relative;
-    display: inline-block;
-    height: $height;
-    width: $width;
-    margin-right: 10px;
-    transition: .4s;
-    &::before {
-      content: "";
-      position: absolute;
-      left: $space;
-      bottom: $space;
-      height: $height - $space*2;
-      width: $height - $space*2;
-      background-color: $dark-color;
-      transition: .4s;
-    }
-    &.round {
-      border-radius: $height;
-      &::before {
-        border-radius: 50%;
-      }
-    }
-  }
-}
-
-@media screen and (min-width: 900px) {
-  body {
-    display: flex;
   }
 }
